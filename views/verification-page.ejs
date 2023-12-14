@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2FA Verification</title>
+    <!-- Add any additional styles or meta tags as needed -->
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+
+      div {
+        text-align: center;
+        margin-top: 50px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      h2 {
+        color: #333;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        margin-top: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+
+      pre {
+        font-family: "Courier New", monospace;
+        background-color: #f8f8f8;
+        padding: 8px;
+        border-radius: 6px;
+      }
+
+      form {
+        margin-top: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="text-align: center; margin-top: 50px">
+      <h2>Scan the QR Code with your 2FA app</h2>
+      <img src="<%=qrUrl%>" alt="QR Code for 2FA" />
+      <pre>Enter your 2FA code below </pre>
+      <form action="/verify" method="post">
+        <label for="token">Enter 2FA Token:</label>
+        <input type="text" id="token" name="token" required />
+        <br />
+        <button type="submit">Verify Token</button>
+      </form>
+    </div>
+    <!-- Add any additional scripts or elements as needed -->
+  </body>
+</html>

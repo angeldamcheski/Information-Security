@@ -6,13 +6,17 @@ const session = require("express-session");
 const emailRegex = /^(.+)@(yahoo\.com|gmail\.com|outlook\.com)$/i;
 const { log } = require("console");
 const app = express();
+const speakeasy = require("speakeasy");
+const qrcode = require("qrcode");
 
 function isPasswordStrong(password) {
   const passwordRegex =
     /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
   return passwordRegex.test(password);
 }
-
+// const appsecret = speakeasy.generateSecret({
+//   name: "Informaciska Bezbednost",
+// });
 app.use(
   session({
     secret: "secret1234",
@@ -32,7 +36,7 @@ app.set("view engine", "ejs");
 
 const PORT = 5000;
 app.listen(PORT, () => {
-  console.log(`Server started running on port: ${PORT}`);
+  console.log(`Server started running on port: http://localhost:${PORT}`);
 });
 app.get("/", (req, res) => {
   res.redirect("/home");
@@ -83,6 +87,9 @@ app.post("/register", async (req, res) => {
   if (existingUser) {
     res.send("User already exists");
   } else {
+    const secret = speakeasy.generateSecret();
+    //data.secret = secret.base32;
+    data.secret = secret;
     const saltRound = 10;
     const salt = bcrypt.genSaltSync(saltRound);
     //const hashedPassword = await bcrypt.hash(data.password, saltRound);
@@ -111,11 +118,41 @@ app.post("/login", async (req, res) => {
     );
     if (isPasswordCorrect) {
       req.session.user = check;
-      res.redirect("/home");
+      //res.redirect("/home");
+      res.redirect("/verify");
     } else {
       res.send("Bad credentials");
     }
   } catch {
     res.send("Wrond login information");
+  }
+});
+
+app.get("/verify", async (req, res) => {
+  if (
+    req.session.user &&
+    req.session.user.secret &&
+    req.session.user.secret.otpauth_url
+  ) {
+    const qrcodeURL = await qrcode.toDataURL(
+      req.session.user.secret.otpauth_url
+    );
+    res.render("verification-page", {
+      qrUrl: qrcodeURL,
+    });
+  } else {
+    return res.status(400).send("User not found");
+  }
+});
+
+app.post("/verify", async (req, res) => {
+  const userToken = req.body.token;
+  const verified = speakeasy.totp.verify({
+    secret: req.session.user.secret.base32,
+    encoding: "base32",
+    token: userToken,
+  });
+  if (verified) {
+    res.redirect("/home");
   }
 });
