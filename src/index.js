@@ -3,9 +3,16 @@ const pasth = require("path");
 const bcrypt = require("bcrypt");
 const collection = require("./config");
 const session = require("express-session");
-
+const emailRegex = /^(.+)@(yahoo\.com|gmail\.com|outlook\.com)$/i;
 const { log } = require("console");
 const app = express();
+
+function isPasswordStrong(password) {
+  const passwordRegex =
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
+  return passwordRegex.test(password);
+}
+
 app.use(
   session({
     secret: "secret1234",
@@ -27,7 +34,9 @@ const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server started running on port: ${PORT}`);
 });
-
+app.get("/", (req, res) => {
+  res.redirect("/home");
+});
 app.get("/home", (req, res) => {
   if (req.session.user && req.session.user._id) {
     console.log(req.session.user);
@@ -58,6 +67,18 @@ app.post("/register", async (req, res) => {
     email: req.body.email,
     password: req.body.password,
   };
+
+  if (!emailRegex.test(data.email)) {
+    return res.status(400).send("Invalid email format");
+  }
+  if (!isPasswordStrong(data.password)) {
+    return res
+      .status(400)
+      .send(
+        "Password should contain at least one capital letter, one number and one special character."
+      );
+  }
+
   const existingUser = await collection.findOne({ name: data.name });
   if (existingUser) {
     res.send("User already exists");
@@ -74,15 +95,15 @@ app.post("/register", async (req, res) => {
 });
 //2FA
 //Dokumentacija(sto se pravi kako se pravi, print screen od site mozni scenarija)
-//Bad credentials
-//Registracija: username, password jacina, da se proveri dali e mejl
 //Login user
-//Da se zacuva salt
+//Bad credentials (*)
+//Registracija: username, password jacina, da se proveri dali e mejl(*)
+//Da se zacuva salt(*)
 app.post("/login", async (req, res) => {
   try {
     const check = await collection.findOne({ name: req.body.username });
     if (!check) {
-      res.send("Username cannot be found");
+      res.send("Bad credentials");
     }
     const isPasswordCorrect = await bcrypt.compare(
       req.body.password,
@@ -92,7 +113,7 @@ app.post("/login", async (req, res) => {
       req.session.user = check;
       res.redirect("/home");
     } else {
-      res.send("Wrong password");
+      res.send("Bad credentials");
     }
   } catch {
     res.send("Wrond login information");
