@@ -44,7 +44,7 @@ app.get("/", (req, res) => {
 app.get("/home", (req, res) => {
   if (req.session.user && req.session.user._id) {
     console.log(req.session.user);
-    res.render("home");
+    res.render("home", { currentUser: req.session.user.name });
   } else {
     res.redirect("/login");
   }
@@ -87,7 +87,9 @@ app.post("/register", async (req, res) => {
   if (existingUser) {
     res.send("User already exists");
   } else {
-    const secret = speakeasy.generateSecret();
+    const secret = speakeasy.generateSecret({
+      name: data.name,
+    });
     //data.secret = secret.base32;
     data.secret = secret;
     const saltRound = 10;
@@ -100,9 +102,9 @@ app.post("/register", async (req, res) => {
     res.redirect("/login");
   }
 });
-//2FA
 //Dokumentacija(sto se pravi kako se pravi, print screen od site mozni scenarija)
 //Login user
+//2FA(*)
 //Bad credentials (*)
 //Registracija: username, password jacina, da se proveri dali e mejl(*)
 //Da se zacuva salt(*)
