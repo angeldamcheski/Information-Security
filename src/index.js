@@ -55,6 +55,22 @@ app.get("/admin", async (req, res) => {
     res.status(403).send("Access forbidden");
   }
 });
+app.get("/edit/:id", async (req, res) => {
+  const correspondingUser = await collection.findOne({ _id: req.params.id });
+  res.render("user-edit", { editUser: correspondingUser });
+});
+app.post("/edit/:id", async (req, res) => {
+  const correspondingUser = await collection.findOne({ _id: req.params.id });
+  correspondingUser.name = req.body.name;
+  correspondingUser.email = req.body.email;
+  correspondingUser.isAdmin = req.body.adminPrivileges == "true" ? true : false;
+  console.log(req.body.adminPrivileges);
+  await collection.updateOne(
+    { _id: req.params.id },
+    { $set: correspondingUser }
+  );
+  res.redirect("/admin");
+});
 app.get("/home", (req, res) => {
   if (req.session.user && req.session.user._id) {
     console.log(req.session.user);

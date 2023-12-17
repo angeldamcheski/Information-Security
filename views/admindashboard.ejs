@@ -69,14 +69,22 @@
         background-color: #2596be;
         color: #fff;
       }
+      #edit-btn {
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        padding-left: 15px;
+        padding-right: 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
     <header>
-      <h1>Welcome Admin</h1>
-      <p><b>Admin Dashboard - User List</b></p>
+      <h1>Admin dashboard</h1>
+      <p><b>User List</b></p>
       <a href="/home">Go back</a><br />
-      <a href="/logout">Click here to logout</a>
     </header>
 
     <section>
@@ -87,16 +95,31 @@
             <th>User ID</th>
             <th>Username</th>
             <th>Email</th>
+            <th>Edit user</th>
           </tr>
         </thead>
         <tbody>
           <% if(userList.length) {%> <% for(let user of userList){ %>
+          <%if(user.name == "admin") {%>
           <tr>
             <td><%=user._id %></td>
             <td><%=user.name %></td>
             <td><%=user.email %></td>
+            <td>/</td>
           </tr>
-          <% } %> <% } else{ %>
+          <% }else{ %>
+
+          <tr>
+            <td><%=user._id %></td>
+            <td><%=user.name %></td>
+            <td><%=user.email %></td>
+            <td>
+              <a href="/edit/<%= user._id %>"
+                ><button id="edit-btn">Edit</button></a
+              >
+            </td>
+          </tr>
+          <% }%> <% } %> <% } else{ %>
           <tr>
             No users in database
           </tr>
