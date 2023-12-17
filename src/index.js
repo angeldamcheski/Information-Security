@@ -87,11 +87,9 @@ app.post("/register", async (req, res) => {
     const secret = speakeasy.generateSecret({
       name: data.name,
     });
-    //data.secret = secret.base32;
     data.secret = secret;
     const saltRound = 10;
     const salt = bcrypt.genSaltSync(saltRound);
-    //const hashedPassword = await bcrypt.hash(data.password, saltRound);
     const hashedPassword = await bcrypt.hashSync(data.password, salt);
     data.password = hashedPassword;
     console.log(data);
@@ -99,17 +97,12 @@ app.post("/register", async (req, res) => {
     res.redirect("/login");
   }
 });
-//Dokumentacija(sto se pravi kako se pravi, print screen od site mozni scenarija)(*)
-//Login user(*)
-//2FA(*)
-//Bad credentials (*)
-//Registracija: username, password jacina, da se proveri dali e mejl(*)
-//Da se zacuva salt(*)
+
 app.post("/login", async (req, res) => {
   try {
     const check = await collection.findOne({ name: req.body.username });
     if (!check) {
-      res.send("Bad credentials");
+      res.status(404).send("Bad credentials");
     }
     const isPasswordCorrect = await bcrypt.compare(
       req.body.password,
@@ -120,7 +113,7 @@ app.post("/login", async (req, res) => {
       //res.redirect("/home");
       res.redirect("/verify");
     } else {
-      res.send("Bad credentials");
+      res.status(401).send("Bad credentials");
     }
   } catch {
     res.send("Wrong login information");
