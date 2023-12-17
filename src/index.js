@@ -14,9 +14,6 @@ function isPasswordStrong(password) {
     /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
   return passwordRegex.test(password);
 }
-// const appsecret = speakeasy.generateSecret({
-//   name: "Informaciska Bezbednost",
-// });
 app.use(
   session({
     secret: "secret1234",
@@ -102,8 +99,8 @@ app.post("/register", async (req, res) => {
     res.redirect("/login");
   }
 });
-//Dokumentacija(sto se pravi kako se pravi, print screen od site mozni scenarija)
-//Login user
+//Dokumentacija(sto se pravi kako se pravi, print screen od site mozni scenarija)(*)
+//Login user(*)
 //2FA(*)
 //Bad credentials (*)
 //Registracija: username, password jacina, da se proveri dali e mejl(*)
@@ -126,7 +123,7 @@ app.post("/login", async (req, res) => {
       res.send("Bad credentials");
     }
   } catch {
-    res.send("Wrond login information");
+    res.send("Wrong login information");
   }
 });
 
@@ -156,5 +153,7 @@ app.post("/verify", async (req, res) => {
   });
   if (verified) {
     res.redirect("/home");
+  } else {
+    res.send("Invalid user token");
   }
 });
