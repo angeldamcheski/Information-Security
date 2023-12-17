@@ -14,6 +14,15 @@ function isPasswordStrong(password) {
     /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
   return passwordRegex.test(password);
 }
+function authorize(isAdmin) {
+  return (req, res, next) => {
+    if (req.session.user && req.session.user.isAdmin === true) {
+      next();
+    } else {
+      res.status(403).send("Access Forbidden");
+    }
+  };
+}
 app.use(
   session({
     secret: "secret1234",
@@ -38,10 +47,18 @@ app.listen(PORT, () => {
 app.get("/", (req, res) => {
   res.redirect("/home");
 });
+app.get("/admin", async (req, res) => {
+  if (req.session.user && req.session.user.isAdmin === true) {
+    const allUsers = await collection.find({});
+    res.render("admindashboard", { userList: allUsers });
+  } else {
+    res.status(403).send("Access forbidden");
+  }
+});
 app.get("/home", (req, res) => {
   if (req.session.user && req.session.user._id) {
     console.log(req.session.user);
-    res.render("home", { currentUser: req.session.user.name });
+    res.render("home", { currentUser: req.session.user });
   } else {
     res.redirect("/login");
   }

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Information Security</title>
+    <title>Admin Dashboard</title>
     <style>
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -16,7 +16,6 @@
         color: whitesmoke;
       }
       header {
-        /*background-color: #3498db;*/
         background-color: #2596be;
         color: #fff;
         padding: 20px;
@@ -27,16 +26,14 @@
         max-width: 800px;
         margin: 20px auto;
         padding: 20px;
-        /* background-color: #fff; */
-
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
         border: 2px black;
+        background-color: #fff;
       }
 
       h1,
       h2 {
-        /* color: #2596be; */
         color: #333;
       }
 
@@ -51,37 +48,63 @@
         text-align: center;
       }
       a {
-        text-decoration: underline;
+        text-decoration: none;
         color: whitesmoke;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #2596be;
+        color: #fff;
       }
     </style>
   </head>
   <body>
     <header>
-      <h1>Welcome <%= currentUser.name %></h1>
-      <p><b>Successful login!</b></p>
-      <% if(currentUser.isAdmin === true){ %>
-      <a href="/admin" style="text-decoration: none">View all users</a><br />
-      <% } %>
+      <h1>Welcome Admin</h1>
+      <p><b>Admin Dashboard - User List</b></p>
+      <a href="/home">Go back</a><br />
       <a href="/logout">Click here to logout</a>
     </header>
 
     <section>
-      <h2>Информациска безбедност</h2>
-      <p>
-        Ова е втора лабораториска вежба по предметот Информациска безбедност
-      </p>
+      <h2>Users in Database</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Username</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if(userList.length) {%> <% for(let user of userList){ %>
+          <tr>
+            <td><%=user._id %></td>
+            <td><%=user.name %></td>
+            <td><%=user.email %></td>
+          </tr>
+          <% } %> <% } else{ %>
+          <tr>
+            No users in database
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
     </section>
 
-    <section>
-      <h2>This project is built with:</h2>
-      <ul>
-        <li>ExpressJS</li>
-        <li>MongoDB</li>
-        <li>bCrypt</li>
-        <li>EJS - Embedded JavaScript Templates</li>
-      </ul>
-    </section>
     <footer>&copy; 2023 Angel Damcheski. All rights reserved.</footer>
   </body>
 </html>
