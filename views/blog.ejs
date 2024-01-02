@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Information Security</title>
+    <title>Information Security - Blog</title>
     <style>
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -11,14 +11,12 @@
         padding: 0;
         background-color: #f5f5f5;
         min-height: 100vh;
-
         color: #333;
       }
       header > h1 {
         color: whitesmoke;
       }
       header {
-        /*background-color: #3498db;*/
         background-color: #2596be;
         color: #fff;
         padding: 20px;
@@ -29,16 +27,14 @@
         max-width: 800px;
         margin: 20px auto;
         padding: 20px;
-        /* background-color: #fff; */
-
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
         border: 2px black;
+        background-color: #fff;
       }
 
       h1,
       h2 {
-        /* color: #2596be; */
         color: #333;
       }
 
@@ -61,8 +57,6 @@
         padding: 0;
         overflow: hidden;
         background-color: #333;
-
-        /* margin-top: -20px; */
       }
       .navbar li {
         display: inline;
@@ -83,43 +77,63 @@
       .navbar a {
         text-decoration: none;
         color: whitesmoke;
-        /* border-bottom: 2px solid transparent; */
+      }
+      .blog-post {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 20px;
+        background-color: #fff;
+      }
+
+      .blog-post h3 {
+        color: #2596be;
+      }
+      .posted-by {
+        font-style: italic;
+        color: #777;
       }
     </style>
   </head>
   <body>
     <ul class="navbar">
       <li><a href="/logout">Logout</a></li>
-      <% if(currentUser.isAdmin === true){ %>
-      <li>
-        <a href="/admin" style="text-decoration: none">View all users</a>
-      </li>
-      <% } %>
-      <li><a href="/posts">Blog</a></li>
+      <li><a href="/home">Back</a></li>
     </ul>
     <header>
-      <h1>Welcome <%= currentUser.name %></h1>
-      <p><b>Successful login!</b></p>
+      <h1>Logged in as <%= currentUser.name %></h1>
+      <p><b>Explore our latest blog posts!</b></p>
     </header>
 
     <section>
-      <h2>Информациска безбедност</h2>
-      <p>
-        Ова е втора лабораториска вежба по предметот Информациска безбедност
-      </p>
+      <h2>Latest Blog Posts</h2>
+      <!-- <div class="blog-post">
+        <h3>Post Title 1</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+          blandit odio vel vehicula condimentum.
+        </p>
+        <p class="posted-by">Posted by: <%= currentUser.name %></p>
+      </div>
+      <div class="blog-post">
+        <h3>Post Title 2</h3>
+        <p>
+          Vestibulum at diam eu leo laoreet aliquet. Nulla facilisi. Curabitur
+          hendrerit leo vitae purus tincidunt, id accumsan turpis tempus.
+        </p>
+      </div> -->
+      <!-- Add more blog posts as needed -->
+      <% if (postList.length == 0) { %>
+      <p>No posts available</p>
+      <% } else{ %> <% postList.forEach(element => { %>
+      <div class="blog-post">
+        <h3><%= element.title %></h3>
+        <p><%= element.content %></p>
+        <p class="posted-by">Posted by: <%= element.refUser %></p>
+      </div>
+      <% }) %> <% } %>
     </section>
 
-    <section>
-      <h2>This project is built with:</h2>
-      <ul>
-        <li>ExpressJS</li>
-        <li>MongoDB</li>
-        <li>bCrypt</li>
-        <li>EJS - Embedded JavaScript Templates</li>
-        <li>Speakeasy</li>
-        <li>Qrcode</li>
-      </ul>
-    </section>
     <footer>&copy; 2023 Angel Damcheski. All rights reserved.</footer>
   </body>
 </html>

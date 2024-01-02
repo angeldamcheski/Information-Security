@@ -30,5 +30,24 @@ const RegisterSchema = new mongoose.Schema({
   },
 });
 
+const PostSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  refUser: {
+    type: String,
+    required: true,
+  },
+});
+const posts = new mongoose.model("posts", PostSchema);
 const collection = new mongoose.model("users", RegisterSchema);
-module.exports = collection;
+// module.exports = collection;
+module.exports = {
+  collection,
+  posts,
+};

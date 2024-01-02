@@ -1,13 +1,16 @@
 const express = require("express");
 const pasth = require("path");
 const bcrypt = require("bcrypt");
-const collection = require("./config");
+const { collection, posts } = require("./config");
 const session = require("express-session");
 const emailRegex = /^(.+)@(yahoo\.com|gmail\.com|outlook\.com)$/i;
 const { log } = require("console");
 const app = express();
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
+const { get } = require("http");
+
+//TODO: Mail veryfing, One more role
 
 function isPasswordStrong(password) {
   const passwordRegex =
@@ -22,6 +25,13 @@ function authorize(isAdmin) {
       res.status(403).send("Access Forbidden");
     }
   };
+}
+function hasPrivilegeToView(role) {
+  if (role == "admin") {
+    return true;
+  } else if (role == "paid") {
+    return true;
+  } else return false;
 }
 app.use(
   session({
@@ -81,6 +91,14 @@ app.get("/home", (req, res) => {
 });
 app.get("/login", (req, res) => {
   res.render("login");
+});
+app.get("/posts", async (req, res) => {
+  if (req.session.user && req.session.user._id) {
+    const allPosts = await posts.find({});
+    res.render("blog", { currentUser: req.session.user, postList: allPosts });
+  }else{
+    res.redirect("/login")
+  }
 });
 app.get("/register", (req, res) => {
   res.render("register");
