@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Post</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      header {
+        background-color: #2596be;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+
+      textarea {
+        resize: none;
+      }
+
+      form {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        background-color: #fff;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+
+      input[type="text"],
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      input[type="submit"] {
+        background-color: #4caf50; /* Green */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin-top: 8px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #4caf50; /* Green */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin-top: 8px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      button a {
+        text-decoration: none;
+        color: white;
+      }
+      input[type="submit"]:hover {
+        background-color: #45a049; /* Darker Green on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Create a New Post</h1>
+    </header>
+
+    <form action="/create-post" method="post">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required />
+
+      <label for="content">Content:</label>
+      <textarea id="content" name="content" rows="6" required></textarea>
+
+      <input type="submit" value="Create Post" />
+      <button><a href="/posts">Cancel</a></button>
+    </form>
+  </body>
+</html>

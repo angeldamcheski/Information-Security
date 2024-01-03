@@ -58,7 +58,7 @@ app.get("/", (req, res) => {
   res.redirect("/home");
 });
 app.get("/admin", async (req, res) => {
-  if (req.session.user && req.session.user.isAdmin === true) {
+  if (req.session.user && req.session.user.userRole === "admin") {
     const allUsers = await collection.find({});
     res.render("admindashboard", { userList: allUsers });
   } else {
@@ -73,7 +73,7 @@ app.post("/edit/:id", async (req, res) => {
   const correspondingUser = await collection.findOne({ _id: req.params.id });
   correspondingUser.name = req.body.name;
   correspondingUser.email = req.body.email;
-  correspondingUser.isAdmin = req.body.adminPrivileges == "true" ? true : false;
+  correspondingUser.userRole = req.body.adminPrivileges;
   console.log(req.body.adminPrivileges);
   await collection.updateOne(
     { _id: req.params.id },
@@ -94,11 +94,39 @@ app.get("/login", (req, res) => {
 });
 app.get("/posts", async (req, res) => {
   if (req.session.user && req.session.user._id) {
-    const allPosts = await posts.find({});
+    const allPosts = await posts.find({}).populate("refUser");
     res.render("blog", { currentUser: req.session.user, postList: allPosts });
-  }else{
-    res.redirect("/login")
+  } else {
+    res.redirect("/login");
   }
+});
+app.get("/delete-post/:id", async (req, res) => {
+  const correspondingPost = await posts.findOne({ _id: req.params.id });
+  await correspondingPost.deleteOne();
+  res.redirect("/posts");
+});
+app.get("/edit-post/:id", async (req, res) => {
+  const correspondingPost = await posts.findOne({ _id: req.params.id });
+  res.render("edit-post", {editPost : correspondingPost});
+});
+app.post("/edit-post/:id", async (req, res) => {
+  const correspondingPost = await posts.findOne({ _id: req.params.id });
+  correspondingPost.title = req.body.title;
+  correspondingPost.content = req.body.content;
+  await posts.updateOne({ _id: req.params.id }, { $set: correspondingPost });
+  res.redirect("/posts");
+});
+app.get("/create-post", (req, res) => {
+  res.render("postcreate");
+});
+app.post("/create-post", async (req, res) => {
+  const createdPost = {
+    title: req.body.title,
+    content: req.body.content,
+    refUser: req.session.user._id,
+  };
+  await posts.insertMany(createdPost);
+  res.redirect("/posts");
 });
 app.get("/register", (req, res) => {
   res.render("register");

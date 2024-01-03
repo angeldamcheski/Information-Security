@@ -22,14 +22,14 @@ const RegisterSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  isAdmin: {
-    type: Boolean,
+  userRole: {
+    type: String,
   },
   secret: {
     type: Object,
   },
 });
-
+//Available user roles: admin, paid, free
 const PostSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -40,7 +40,8 @@ const PostSchema = new mongoose.Schema({
     required: true,
   },
   refUser: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
     required: true,
   },
 });

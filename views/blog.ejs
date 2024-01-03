@@ -79,11 +79,13 @@
         color: whitesmoke;
       }
       .blog-post {
-        border: 1px solid #ddd;
+        border: 2px solid #ddd;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
         padding: 10px;
         margin-bottom: 20px;
         background-color: #fff;
+        margin-top: 12px;
       }
 
       .blog-post h3 {
@@ -92,6 +94,41 @@
       .posted-by {
         font-style: italic;
         color: #777;
+      }
+      .edit-btn,
+      .delete-btn {
+        background-color: #4caf50;
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      .edit-btn:hover,
+      .delete-btn:hover {
+        background-color: #45a049;
+      }
+      .create-post {
+        margin-bottom: 10px;
+        background-color: #333;
+        display: inline;
+        padding: 6px;
+        border-radius: 3px;
+      }
+      .create-post a {
+        text-decoration: none;
+        color: whitesmoke;
+      }
+      .edit-btn a,
+      .delete-btn a {
+        text-decoration: none;
+        color: whitesmoke;
       }
     </style>
   </head>
@@ -107,6 +144,11 @@
 
     <section>
       <h2>Latest Blog Posts</h2>
+      <% if (currentUser.userRole === "paid") { %>
+      <div class="create-post">
+        <a href="/create-post">Create a new post!</a>
+      </div>
+      <% } %>
       <!-- <div class="blog-post">
         <h3>Post Title 1</h3>
         <p>
@@ -129,7 +171,11 @@
       <div class="blog-post">
         <h3><%= element.title %></h3>
         <p><%= element.content %></p>
-        <p class="posted-by">Posted by: <%= element.refUser %></p>
+        <p class="posted-by">Posted by: <%= element.refUser.name %></p>
+        <% if (currentUser.userRole.toLowerCase() === "admin") { %>
+        <button class="edit-btn"><a href="/edit-post/<%= element._id %>">Edit</a></button>
+        <button class="delete-btn"><a href="/delete-post/<%= element._id %>">Delete</a></button>
+        <% } %>
       </div>
       <% }) %> <% } %>
     </section>

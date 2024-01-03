@@ -57,6 +57,9 @@
       #back-btn {
         margin-right: 0px;
       }
+      #adminPrivilegesDiv{
+        margin-bottom: 10px;
+      }
     </style>
   </head>
   <body>
@@ -80,17 +83,21 @@
         value="<%= editUser.email %>"
         required
       />
-      <label for="adminPrivileges">Give admin privileges?</label>
-      <div>
-        <input type="radio" id="yes" name="adminPrivileges" value="true" <%=
-        editUser.isAdmin ? 'checked' : '' %> />
-        <label for="yes">Yes</label>
-      </div>
-      <div>
-        <input type="radio" id="no" name="adminPrivileges" value="false" <%=
-        !editUser.isAdmin ? 'checked' : '' %> />
-        <label for="no">No</label>
-      </div>
+      <label for="adminPrivileges">Select privilege:</label>
+<div id="adminPrivilegesDiv">
+  <select id="adminPrivileges" name="adminPrivileges">
+    <option value="admin" <% if (editUser.userRole === "admin") { %>
+     selected
+    <% } %>>Admin</option>
+    <option value="paid" <% if (editUser.userRole === "paid") { %>
+     selected
+    <% } %>>Paid</option>
+    <option value="free" <% if (editUser.userRole === "free") { %>
+      selected
+    <% } %>>Free</option>
+  </select>
+</div>
+
       <!-- Add more fields as needed -->
 
       <button type="submit">Save Changes</button>

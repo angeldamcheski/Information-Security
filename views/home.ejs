@@ -90,7 +90,7 @@
   <body>
     <ul class="navbar">
       <li><a href="/logout">Logout</a></li>
-      <% if(currentUser.isAdmin === true){ %>
+      <% if(currentUser.userRole === "admin"){ %>
       <li>
         <a href="/admin" style="text-decoration: none">View all users</a>
       </li>
