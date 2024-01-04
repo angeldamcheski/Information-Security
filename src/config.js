@@ -28,8 +28,16 @@ const RegisterSchema = new mongoose.Schema({
   secret: {
     type: Object,
   },
+  confirmCode: { type: String },
+  isConfirmed: {
+    type: Boolean,
+    default: false,
+  },
 });
 //Available user roles: admin, paid, free
+//informaciskabezbednost@2
+//angelinfosec262@gmail.com
+//jqev xqgv czaz epqj
 const PostSchema = new mongoose.Schema({
   title: {
     type: String,

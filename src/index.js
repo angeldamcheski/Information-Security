@@ -7,9 +7,20 @@ const emailRegex = /^(.+)@(yahoo\.com|gmail\.com|outlook\.com)$/i;
 const { log } = require("console");
 const app = express();
 const speakeasy = require("speakeasy");
+const nodemailer = require("nodemailer");
 const qrcode = require("qrcode");
 const { get } = require("http");
-
+const crypto = require("crypto");
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: "angelinfosec262@gmail.com",
+    pass: "jqev xqgv czaz epqj",
+  },
+});
 //TODO: Mail veryfing, One more role
 
 function isPasswordStrong(password) {
@@ -81,6 +92,7 @@ app.post("/edit/:id", async (req, res) => {
   );
   res.redirect("/admin");
 });
+
 app.get("/home", (req, res) => {
   if (req.session.user && req.session.user._id) {
     console.log(req.session.user);
@@ -107,7 +119,7 @@ app.get("/delete-post/:id", async (req, res) => {
 });
 app.get("/edit-post/:id", async (req, res) => {
   const correspondingPost = await posts.findOne({ _id: req.params.id });
-  res.render("edit-post", {editPost : correspondingPost});
+  res.render("edit-post", { editPost: correspondingPost });
 });
 app.post("/edit-post/:id", async (req, res) => {
   const correspondingPost = await posts.findOne({ _id: req.params.id });
@@ -142,10 +154,12 @@ app.get("/logout", (req, res) => {
 });
 //Registering the user
 app.post("/register", async (req, res) => {
+  const confirmationCode = crypto.randomBytes(20).toString("hex");
   const data = {
     name: req.body.username,
     email: req.body.email,
     password: req.body.password,
+    confirmCode: confirmationCode,
   };
 
   if (!emailRegex.test(data.email)) {
@@ -158,6 +172,7 @@ app.post("/register", async (req, res) => {
         "Password should contain at least one capital letter, one number and one special character."
       );
   }
+  const confirmationLink = `http://localhost:${PORT}/confirm/${confirmationCode}`;
 
   const existingUser = await collection.findOne({ name: data.name });
   if (existingUser) {
@@ -173,7 +188,37 @@ app.post("/register", async (req, res) => {
     data.password = hashedPassword;
     console.log(data);
     const userData = await collection.insertMany(data);
-    res.redirect("/login");
+    const mailOptions = {
+      from: { name: "Angel Damcheski", address: "angelinfosec262@gmail.com" },
+      to: "damcheskiangel911@gmail.com",
+      subject: "Verify your account",
+      text: `Click the following link to verify your account: ${confirmationLink}`,
+    };
+    await transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending confirmation email: ", error);
+        return res.status(500).send("Internal server error");
+      } else {
+        console.log(confirmationLink);
+        res.status(200).send("Check your email for a confirmation link");
+      }
+    });
+    // res.redirect("/login");
+  }
+});
+
+app.get("/confirm/:code", async (req, res) => {
+  const confirmationCode = req.params.code;
+  const user = await collection.findOne({ confirmCode: confirmationCode });
+  if (!user) {
+    return res.status(404).send("Invalid confirmation code");
+  } else {
+    user.isConfirmed = true;
+    user.confirmCode = undefined;
+    await user.save();
+    const message =
+      "Email confirmed successfully. You can now <a href='/login'>log in</a>.";
+    res.status(200).send(message);
   }
 });
 
