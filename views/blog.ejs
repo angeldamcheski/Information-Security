@@ -87,7 +87,10 @@
         background-color: #fff;
         margin-top: 12px;
       }
-
+      .blog-post:hover {
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.144);
+        transition: box-shadow 0.3s ease-in-out;
+      }
       .blog-post h3 {
         color: #2596be;
       }
@@ -124,6 +127,9 @@
       .create-post a {
         text-decoration: none;
         color: whitesmoke;
+      }
+      .create-post:hover {
+        background-color: #4d4c4c;
       }
       .edit-btn a,
       .delete-btn a {
@@ -172,9 +178,13 @@
         <h3><%= element.title %></h3>
         <p><%= element.content %></p>
         <p class="posted-by">Posted by: <%= element.refUser.name %></p>
-        <% if (currentUser.userRole.toLowerCase() === "admin") { %>
-        <button class="edit-btn"><a href="/edit-post/<%= element._id %>">Edit</a></button>
-        <button class="delete-btn"><a href="/delete-post/<%= element._id %>">Delete</a></button>
+        <% if (currentUser.userRole === "admin") { %>
+        <button class="edit-btn">
+          <a href="/edit-post/<%= element._id %>">Edit</a>
+        </button>
+        <button class="delete-btn">
+          <a href="/delete-post/<%= element._id %>">Delete</a>
+        </button>
         <% } %>
       </div>
       <% }) %> <% } %>
