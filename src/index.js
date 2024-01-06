@@ -1,5 +1,5 @@
 const express = require("express");
-const pasth = require("path");
+const path = require("path");
 const bcrypt = require("bcrypt");
 const { collection, posts } = require("./config");
 const session = require("express-session");
