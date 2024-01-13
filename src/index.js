@@ -1,5 +1,7 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
+const https = require("https");
 const bcrypt = require("bcrypt");
 const { collection, posts } = require("./config");
 const session = require("express-session");
@@ -61,10 +63,30 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.set("view engine", "ejs");
 
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server started running on port: http://localhost:${PORT}`);
-});
+const PORT = 443;
+// app.listen(PORT, () => {
+//   console.log(`Server started running on port: http://localhost:${PORT}`);
+// });
+const keyFilePath =
+  "C:\\Users\\damch\\OneDrive\\Desktop\\CertificatesInfoSec\\server.key";
+const certFilePath =
+  "C:\\Users\\damch\\OneDrive\\Desktop\\CertificatesInfoSec\\server.crt";
+
+
+const privateKey = fs.readFileSync(keyFilePath, "utf8");
+const certificate = fs.readFileSync(certFilePath, "utf8");
+const sslServer = https.createServer(
+  {
+    key: privateKey,
+    cert: certificate,
+  },
+  app
+);
+
+sslServer.listen(443, () =>
+  console.log("Server started running on port: https://localhost:443")
+);
+
 app.get("/", (req, res) => {
   res.redirect("/home");
 });
@@ -172,7 +194,7 @@ app.post("/register", async (req, res) => {
         "Password should contain at least one capital letter, one number and one special character."
       );
   }
-  const confirmationLink = `http://localhost:${PORT}/confirm/${confirmationCode}`;
+  const confirmationLink = `https://localhost:${PORT}/confirm/${confirmationCode}`;
 
   const existingUser = await collection.findOne({ name: data.name });
   if (existingUser) {
@@ -274,3 +296,8 @@ app.post("/verify", async (req, res) => {
     res.send("Invalid user token");
   }
 });
+
+// const keyFilePath =
+//   "C:\\Users\\damch\\Downloads\\wetransfer_finkica-key_2024-01-07_0017\\server.key";
+// const certFilePath =
+//   "C:\\Users\\damch\\Downloads\\wetransfer_finkica-key_2024-01-07_0017\\server.crt";
